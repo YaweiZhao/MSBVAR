@@ -1,0 +1,117 @@
+# Register the package
+useDynLib(MSBVAR, .registration=TRUE)
+
+# Import required packages
+import(KernSmooth)
+import(coda)
+import(xtable)
+import(bit)
+import(mvtnorm)
+import(lattice)
+
+importFrom("graphics", "abline", "box", "close.screen", "contour",
+           "layout", "lines", "mtext", "pairs", "par", "persp", "plot",
+           "plot.new", "points", "polygon", "screen", "split.screen",
+           "title")
+importFrom("stats", "approx", "ar.ols", "as.formula", "as.ts",
+           "density", "embed", "frequency", "kmeans", "lm", "optim",
+           "pchisq", "pf", "qnorm", "quantile", "rchisq", "rgamma",
+           "rnorm", "runif", "start", "ts", "ts.plot", "tsp", "var")
+importFrom("grDevices", "devAskNewPage")
+
+# Functions visible to pkg users
+export(
+       dfev,
+       print.dfev,
+       summary.dfev,
+       granger.test,
+       var.lag.specification,
+       SZ.prior.evaluation,
+       decay.spec,
+       reduced.form.var,
+       szbvar,
+       szbsvar,
+       gibbs.A0,
+       mcmc.szbsvar,
+       normalize.svar,
+       A02mcmc,
+       irf,
+       mc.irf,
+       null.space,
+       mae,
+       restmtx,
+       rmse,
+       rmultnorm,
+       ldwishart,
+       rwishart,
+       cf.forecasts,
+       forc.ecdf,
+       forecast,
+       hc.forecast,
+       uc.forecast,
+       posterior.fit,
+       mountains,
+       plot.gibbs.A0,
+       plot.irf,
+       plot.mc.irf,
+       plot.ms.irf,
+       plot.forecast,
+       plot.forc.ecdf,
+       plotregimeid,
+       print.posterior.fit,
+       summary.forecast,
+       list.print,
+       SS.ffbs,
+       sum.SS,
+       mean.SS,
+       plot.SS,
+       ddirichlet,
+       rdirichlet,
+       msbvar,
+       gibbs.msbvar,
+       summary,
+       initialize.msbvar,
+       simulateMSVAR,
+       simulateMSAR,
+       msvar,
+       regimeSummary
+       )
+
+# Declare S3 methods for printing and summaries
+
+S3method(print, posterior.fit.BVAR)
+S3method(print, posterior.fit.BSVAR)
+S3method(print, posterior.fit.MSBVAR)
+S3method(print, dfev)
+
+S3method(summary, dfev)
+
+S3method(summary, forecast.VAR)
+S3method(summary, forecast.BVAR)
+S3method(summary, forecast.BSVAR)
+
+S3method(plot, forecast)
+
+S3method(summary, VAR)
+S3method(summary, BVAR)
+S3method(summary, BSVAR)
+
+# S3 method for gibbs.A0 objects
+S3method(plot, gibbs.A0)
+
+# Plot methods for IRF and forecasts
+S3method(plot, irf)
+S3method(plot, mc.irf)
+S3method(plot, forecast.VAR)
+
+# Summary and plot methods for objects of SS class.
+#S3method(summary, SS)
+S3method(sum, SS)
+S3method(mean, SS)
+S3method(plot, SS)
+
+# Others
+S3method(plot, forc.ecdf)
+S3method(plot, ms.irf)
+S3method(print, posterior.fit)
+S3method(summary, forecast)

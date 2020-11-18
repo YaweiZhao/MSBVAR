@@ -1,0 +1,285 @@
+Package: MSBVAR
+Version: 0.9-3
+Date: 2016-11-14
+Title: Markov-Switching, Bayesian, Vector Autoregression Models
+Author: Patrick T. Brandt <pbrandt@utdallas.edu>
+Maintainer: Patrick T. Brandt <pbrandt@utdallas.edu>
+Depends: R (>= 2.11.0), KernSmooth, xtable, coda, bit, mvtnorm
+Description: Provides methods for estimating frequentist and
+  Bayesian Vector Autoregression (VAR) models.  Functions for reduced
+  form and structural VAR models are also available. Includes
+  methods for the generating posterior inferences for VAR
+  forecasts, impulse responses (using likelihood-based error bands),
+  and forecast error decompositions.  Also includes utility functions
+  for plotting forecasts and impulse responses, and generating draws
+  from Wishart and singular multivariate normal densities.  Current
+  version includes functionality to build models with
+  Markov switching.
+LazyLoad: yes
+License: MIT
+URL: http://www.utdallas.edu/~pbrandt/
+
+## Installation
+
+You can install the released version of MSBVAR fromfrom [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("tulipsliu/MSBVAR")
+```
+
+/* Revisions and History */
+2005-03-17 Initial version
+2005-07-21 Revised to new site and location.  Revised forecasting
+	   functions to match the Political Analysis paper by Brandt
+           and Freeman.
+2005-09-15 Revised documentation and code to pass checks for generics.
+	   Included Israeli-Palestinian dataset for examples.
+2005-10-18 Incorporates preliminary functions for Bayesian SVAR models.
+2006-01-19 Updated calls to Matrix package so they do not default to
+           using sparse matrices in MSBVAR functions.
+2006-01-29 Revised impulse response plotting functions to plot shocks
+           / impulses in the columns and responses in the rows. The
+	   code was documented to work this way, but delivered an
+           incorrect plot.  Also changed the irf.var() function so
+	   that it used an UPPER triangular A0 matrix rather than a
+           lower one (the former is consistent with the return from
+           chol()).
+2006-02-01 Updated plotting functions for IRFs to use correct ylims
+           for response plots.
+2006-02-02 Removed creation of "L" in the LU decomposition used to
+           backsolve structural VAR systems in "drawA0".  The U's from
+	   the lu(t(A0)) are valid -- sometimes the Matrix library
+           cannot generate a well behaved L, but it is not necessary
+	   for the Gibbs sampler.
+2006-02-10 Changed starting value computation for structural.szbvar()
+	   from a set of N(0,25) to N(0,1).
+	   Added a tolerance of 1e-12 to QR decompositions in drawing
+           A(0) for B-SVAR models.
+2006-02-18 Version 0.1.6
+	   Replaced LU decompositions with QR
+           decompositions in the computation of the orthonormal basis
+           of the B-SVAR model posterior sampling.
+	   Removed dependency on matrix package by replacing LU
+           decompositions with QR decompositions
+2006-02-24 Corrected limits for plots in plot.irf.var().  Previous
+           versions could truncate the plot axes incorrectly.
+2006-03-02 Corrected an error in the computation of the marginal data
+           density for B-SVAR models.  Optimized code for computing
+           posterior fit measures for
+	   posterior.fit.structural.szbvar()
+2006-03-07 Corrected overflow error in some computations of the log
+	   determinants in posterior.fit.structural.szbvar() by
+	   changing the computation of the log determinant for a
+	   diagonal matrix to the simpler sum of the diagonal
+           elements or using the determinant(,logarithm=T) function.
+2006-03-15 Version 0.1.9
+	   1) Added option to change normalization rules for A(0) in
+           sampling the structural parameters of B-SVAR models.
+           Previous versions had hard coded the normalization.  New
+	   version supports all of the normalization rules in
+	   normalize.svar().  Documentation for this change has been
+           updated as well.
+2006-03-15 Version 0.1.10
+	   1) Corrected matrix inversion of A(0) in
+	   mc.irf.structural.szbvar() and mcmc.structural.szbvar().
+	   Previous version were possibly zeroing out A(0) terms
+	   incorrectly when computing IRFs.  This did NOT affect the
+	   sampling of IRFs using gibbs.A0.structural.szbvar().
+	   2) Corrected indexing of AR coefficients and intercepts for
+           the output object in reduced.form.var().  Previous version
+	   selected the wrong coefficients for the intercept and AR(1)
+	   terms.
+2006-03-17 Version 0.1.11
+	   Changed order of arguments in gibbs.A0.structural.szbvar()
+	   so that the normalization options do not break older
+	   code.
+2006-03-26 Added forced matrix via as.matrix for testing Ui object
+	   dimensions in b2a function in hidden.R
+2006-04-01 Version 0.1.12
+	   Now requires "coda" package.
+	   Flattened the A0 and W objects that are output by gibbs.A0
+	   function to conserve memory.  Lowers the memory overhead
+           for B-SVAR models by nearly 70% allowing for longer runs of
+	   the Gibbs sampler.
+	   Added function "A02mcmc" to convert A0 posterior draws to
+           coda mcmc objects.
+2006-04-06 Changed selection criteria in var.lag.specification to
+           include the Hannan-Quinn measure and to minimize fit
+	   criteria.
+2006-04-07 Added a check on the rank of the exogenous variables to the
+	   structural.szbvar() function.
+2006-06-18 Implemented classes for VAR, BVAR, and B-SVAR models.
+	   Class based dispatching is now available for most
+	   post-estimation tasks such as impulse responses, Monte
+	   Carlo sampling, plotting, etc.   Some function names have
+	   changed from previous (post 0.1.1) versions.  Please be
+	   aware of this.
+2006-07-15 Revised documentation to acccount for new class-based
+	   dispatching.
+2006-09-19 Corrected incorrect handling of intercepts in
+           reduced.form.var() function.  Previous version thought the
+	   intercept was the first, when it should be the last
+	   coefficients.
+2007-06-18 C++ implementations added
+2007-10-23 Bug fixes: corrected summary() methods for VAR, BVAR and
+           BSVAR classes and fixed bugs in gibbs.A0(), the Gibbs
+	   sampler for B-SVAR models.  Thanks to Tatevik Sekhposyan
+	   for helping find this bug.
+2007-10-29 Updated uc.forecast() to allow for forecasts with exogenous
+	   regressors.  The previous version would crash if there were
+	   exogenous regressors to be included in the forecast
+	   horizon.
+2007-12-06 Fixed classes / defaults for plot.mc.irf() related
+	   functions.  Previous versions had hard coded values rather
+	   than allowing the user to control the arguments.  Thanks
+	   to Mike Colaresi for finding this bug.
+2008-04-22 Updated defaults to plot.mc.irf to properly pass user
+	   arguments (which may have been arbitrarily ignored in the
+	   past).  Also updated the sanity.check.prior() functions
+	   that are internal to the B-(S)VAR estimators.  Some of
+	   these recommendations were non-sensical or required
+	   exogenous variables (a very VAR taboo).
+2008-10-10 Upgraded version to 0.3.2, requires R 2.7.0 or higher,
+	   updated UTD address info, and copyright dates.
+	   Cleaned up empty documentation sections.
+2008-10-13 Implemented storing of state matrices for MS functions with
+	   the "bits" package.
+2008-10-19 Fixed a but in the szbvar() code for the prior degrees of
+	   freedom computation.
+2008-11-20 Fixed scaling of prior for the intercept (lambda4) in the
+ 	   szbsvar() function.  Previously is was entering the prior
+	   covariance as lambda4 rather than lambda4^2
+2008-12-11 Revised mc.irf.BSVAR() to use means rather than medians for
+	   central tendency for IRFs.
+2009-06-12 Updated documentation to function under R 2.9 and the new
+           Rd parsing.  Included MSBVAR estimation (initial cut) using
+	   msbvar() and related functions.  This will handle the 2
+	   state MS case with random permutation sampling.  Added
+	   documentation for the new functions as well.
+2010-02-24 Added classing mechanism to the forecast() function.  It
+	   can now handle VAR, BVAR and BSVAR models.  Related summary()
+	   and plot() methods have been added for forecast().  Also
+	   updated the msbvar() and gibbs.msbvar() functions to handle
+	   h>2 states.  New C backend for the state-space sampling has
+	   been implemented and is much faster and more robust (i.e.,
+	   it will not segfault like the old one).
+2010-03-29 Implemented a set of posterior fit measures (llf, logMDD,
+	   etc.) for the MSBVAR models.
+2010-06-10 Changed prior variance computation of szbvar() and
+           szbsvar() to used OLS and estimate an intercept.  This
+	   better cover the case of non-stationary data or data that
+	   are not demeaned, since we are not forcing the prior
+	   intercepts to zero when computing the variance of the
+	   prior. Thanks to Gareth Thomas for comments on this.
+2010-06-23 Added full documentation for the MSBVAR model gibbs
+           sampler.  Example included for gibbs.msbvar().
+2010-11-28 Updated NAMESPACE and DESCRIPTION to comply with R 2.12.0.
+	   Update BCF citations in documentation.
+	   Update BCFdata files to fit documentation and published
+	   papers.
+	   Updated version to 0.5.1.
+2011-01-13 Added attribute objects to VAR, BVAR, MSBVAR models so we
+           have sensible variable names to use in the plots and
+	   analyses.
+2011-01-27 Added plotregimeid() function to plot post-posterior
+	   sampling clustered draws from the Gibbs random permutation
+	   sampler. This can be used for graphic identification of the
+	   Markov-switching regimes based on intercepts and variances
+	   of the VAR equations.  Since there are h! orderings of the
+	   regimes (and identical posterior modes) such a function
+	   helps identify a single posterior mode for refined
+	   sampling.
+2011-01-31 Updated package to version 0.6-0 to reflect milestones in
+	   MSBVAR development.  Added initial documentation for
+	   plotregimeid().
+2011-02-11 Began works on forecasting MSBVAR models.  This is part of
+           a wholesale rewrite of how the forecasts are computed,
+	   presented and summarized in the package.
+2011-03-01 Corrected sample indexing for the msbvar() function.  It
+	   was carrying along one extra observation that should have
+	   been use for computing lags rather than part of the data.
+	   Changes down-stream functions like gibbs.msbvar(), etc. for
+	   compliance.
+2011-03-04 Degrees of freedom corrections in the prior and the
+	   posterior computations for the msbvar() models.
+2011-12-07 Adjusted the underflow threshold for regime probabilities
+	   from 10^{-30} to 10^{-100} to improve the accuracy of
+	   regime classifications in the C++ code.
+2012-01-20 Updated MSBVAR model functions to use revised compiled
+	   Fortran code that is more numerically accurate.  New code
+	   follows Fruhwirth-Schnatter's (2006) recommendations for MS
+	   models.  Includes new code for MSBVAR models with all
+	   switching parameters, posterior summaries, etc.  See code
+	   and package details.
+2012-04-24 Revised computations of Sigma x (X'X)^{-1} computations in
+	   msbvar() to be more robust to near singularities.
+2012-07-21 Version 0.7-0 ready for release, including new code for
+           msbvar() modeling
+2012-07-25 Version 0.7-1, corrects a bug in Fortran allocations.
+2012-07-26 Updated to correct Fortran allocation error.  Change
+           initialization of msvar() function.  Corrects how the state
+	   space filter compiles across archs.
+2014-05-12 Corrected "extern C" errors in C++ code.  Version 0.9-0
+2014-06-09 *Bug fixes*
+
+	   Corrected summary.BSVAR to include "p" (long-standing bug,
+	   	   output now works).
+	   New startup message code.
+	   Added some gc() calls for memory cleanup after some
+	   	 intensive functions.
+	   Added par() reset to plotregimeid() so subsequent plot
+	   	 calls have the correct layouts and expected margins.
+		 Corrected startup of plotregimeid so it now produces
+		 a plot rather an a user prompt for the first one.
+
+	   *Features*
+
+	   Added correct time series axis to plot.SS
+
+	   Separated code to compute IRF modes and error bands from
+	   the plotting.  This makes the package easier to maintain
+	   and extend for other methods and plotting.
+
+	   Added impulse response functions for the MSBVAR models via
+	   plot.mc.irf().
+
+	   Added plot.ms.irf() functions as an experiment in
+	   combining IRFs across regimes in one plot.
+
+2014-06-20 *Features*
+	   regimeSummary() command added to provide summary statistics
+	   for estimated MSBVAR regime probability densities and
+	   durations.
+
+	   Added forecast() example for MSBVAR models
+
+	   *Bug fixes*
+
+	   Added length check on sign.list in mc.irf for BSVAR models.
+	   Added dimension check on prior transition matrix to MSBVAR
+	   models,
+2015-02-04 Updated DESCRIPTION files.
+	   Added wrapper.c so that RNG calls point to unif_rand for
+	   use in the FFBS.f Fortran code.  This way the RNG is all
+	   seeded by R.
+2016-11-14 Updates to correct use of return in hidden.R
+2020-11-18 Updates bu Daniel tulips liu
+
+MSBVAR Package
+Copyright (C) 2005-2016 Patrick T. Brandt
+Support provided by the U.S. National Science Foundation
+(Grants SES-0351179, SES-0351205, SES-0540816, and SES-0921051)
+
+Patrick T. Brandt
+School of Economic, Political and Policy Sciences
+University of Texas, Dallas
+800 W. Campbell Rd, Green 31
+Richardson, Texas 75080
+http://www.utdallas.edu/~pbrandt
+pbrandt@utdallas.edu
+
+Danielu Tulips Liu
+Renmin University of China
+bbs.pinggu.org/tulipsliu
+xudongliu520@vip.qq.com
