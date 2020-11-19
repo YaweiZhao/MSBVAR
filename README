@@ -264,7 +264,7 @@ devtools::install_github("tulipsliu/MSBVAR")
 	   use in the FFBS.f Fortran code.  This way the RNG is all
 	   seeded by R.
 2016-11-14 Updates to correct use of return in hidden.R
-2020-11-18 Updates bu Daniel tulips liu
+2020-11-18 Updates by Daniel tulips liu
 
 MSBVAR Package
 Copyright (C) 2005-2016 Patrick T. Brandt
@@ -278,8 +278,3 @@ University of Texas, Dallas
 Richardson, Texas 75080
 http://www.utdallas.edu/~pbrandt
 pbrandt@utdallas.edu
-
-Danielu Tulips Liu
-Renmin University of China
-bbs.pinggu.org/tulipsliu
-xudongliu520@vip.qq.com
