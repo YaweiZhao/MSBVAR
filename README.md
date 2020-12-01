@@ -242,6 +242,8 @@ Copyright (C) 2005-2016 Patrick T. Brandt Support provided by the U.S.
 National Science Foundation (Grants SES-0351179, SES-0351205,
 SES-0540816, and SES-0921051)
 
+2020-11-23 The package have not update many years.For example the 'bit' package update so that 
+the 'MSBVAR' package`s SS.R file some function can not run by a right way.now,Daniel try to do something in order to let the package running.
 Patrick T. Brandt School of Economic, Political and Policy Sciences
 University of Texas, Dallas 800 W. Campbell Rd, Green 31 Richardson,
 Texas 75080

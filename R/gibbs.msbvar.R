@@ -581,7 +581,7 @@ gibbs.msbvar <- function(x, N1=1000, N2=1000,
         # Store things -- after flip / identification
         Sigma.storage[j,] <- as.vector(apply(Sigmai, 3, vech))
         Beta.storage[j,] <- as.vector(Betai)
-        ss.storage[[j]] <- as.bit.integer(as.integer(ss$SS[,1:(h-1)]))
+        ss.storage[[j]] <- as.integer(as.integer(ss$SS[,1:(h-1)]))
         transition.storage[,,j] <- ss$transitions
         Q.storage[j,] <- as.vector(Q)
 

@@ -1,0 +1,20 @@
+---
+title: "How_to_use_MSBVAR_package"
+author: Patrick Brandt
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How_to_use_MSBVAR_package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(MSBVAR)
+```
