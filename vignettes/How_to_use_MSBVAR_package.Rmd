@@ -17,4 +17,133 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(MSBVAR)
+# SZ, B-SVAR model for the Levant data
+data(BCFdata)
+m <- ncol(Y)
+ident <- diag(m)
+ident[1,] <- 1
+ident[2,1] <- 1
+# estimate the model's posterior moments
+set.seed(123)
+model <- szbsvar(Y, p=2, z=z2, lambda0=0.8, lambda1=0.1, lambda3=1,
+lambda4=0.1, lambda5=0.05, mu5=0, mu6=5,
+ident, qm=12)
+# Set length of burn-in and size of posterior. These are only an
+# example. Production runs should set these much higher.
+N1 <- 1000
+N2 <- 1000
+A0.posterior.obj <- gibbs.A0(model, N1, N2, thin=1)
+# Use coda to look at the posterior.
+A0.free <- A02mcmc(A0.posterior.obj)
+win.graph()
+#plot(A0.free)
 ```
+
+
+# Test write some latex(MikTex) equation
+The porpose is to write some equation.This vignetts will update by tulipsliu useing many days.
+Furthermore, as recently emphasized by Cogley and Sargent
+(2003), overlooking heteroskedasticity would generate fictitious dynamics in the random coefficients.
+Consider the model
+$$
+\tag{1.1}
+y_t=c_t+B_{1,t Y{t-1}}+\ldots+B_{k,t y_{t-k}}+\mu_t
+$$
+where $y_t$ is an $n*1$ vector of observed endogenous vaiables;$c_t$ is an $n*1$ vector fo time varying coefficients.
+$$
+\tag{1.2}
+\y_t=c_t+\mathbb{B}_{1,t y_{t-1}}+\ldots+\mathbb{B}_{k,t y_{t_k}}
++A_t^{-1}\Sigma_{t \sigma_t}
+$$
+# Gibbs sampler for a Markov-switching Bayesian reduced form vector autoregression model
+- Description
+Draws a Bayesian posterior sample for a Markov-switching Bayesian reduced form vector autoregression model based on the setup from the msbvar function.
+
+- Details
+This function implements a Gibbs sampler for the posterior of a MSBVAR model setup with
+msbvar. This is a reduced form MSBVAR model. The estimation is done in a mixture of native R code and Fortran. The sampling of the BVAR coefficients, the transition matrix, and the error
+covariances for each regime are done in native R code. The forward-filtering-backward-sampling
+of the Markov-switching process (The most computationally intensive part of the estimation) is
+handled in compiled Fortran code. As such, this model is reasonably fast for small samples / small
+numbers of regimes (say less than 5000 observations and 2-4 regimes). The reason for this mixed
+implementation is that it is easier to setup variants of the model (E.g., Some coefficients switching,
+others not; different sampling methods, etc. Details will come in future versions of the package.)
+The random permuation of the states is done using a multinomial step: at each draw of the Gibbs
+sampler, the states are permuted using a multinomial draw. This generates a posterior sample where
+the states are unidentified. This makes sense, since the user may have little idea of how to select
+among the h! posterior models of the reduced form MSBVAR model (see e.g., Fruhwirth-Schnatter
+(2006)). Once a posterior sample has been draw with random permuation, a clustering algorithm
+(see plotregimeid) can be used to identify the states, for example, by examining the intercepts or
+covariances across the regimes (see the example below for details).
+Only the Beta.idx or Sigma.idx value is followed. If the first is given the second will be ignored.
+So variance ordering for identification can only be used when Beta.idx=NULL. See plotregimeid
+for plotting and summary methods for the permuted sampler.
+The Gibbs sampler is estimated using six steps:
+Drawing the state-space for the Markov process This step uses compiled code to draw the 0-1
+matrix of the regimes. It uses the Baum-Hamilton-Lee-Kim (BHLK) filter and smoother to
+estimate the regime probabilities. Draws are based on the standard forward-filter-backwardsample algorithm.
+Drawing the Markov transition matrix Q Conditional on the other parameters, this takes a draw
+from a Dirichlet posterior with the alpha.prior prior.
+Regression step update Conditional on the state-space and the Markov-switching process data
+augmentation steps, estimate a set of h regressions, one for each regime.
+Draw the error covariances, Σh Conditional on the other steps, compute and draw the error covariances from an inverse Wishart pdf.
+Draw the regression coefficients For each set of classified observations’ (based on the previous
+step) BVAR regression coefficients, take a draw from their multivariate normal posterior.
+Permute the states If permute = TRUE, then permute the states and the respective coefficients.
+The state-space for the MS process is a T × h matrix of zeros and ones. Since this matrix classifies
+the observations infor states for the N2 posterior draws, it does not make sense to store it in double
+precisions. We use the bit package to compress this matrix into a 2-bit integer representation
+for more efficient storage. Functions are provided (see below) for summarizing and plotting the
+resulting state-space of the MS process.
+
+```{r}
+## Not run:
+# This example can be pasted into a script or copied into R to run. It
+# takes a few minutes, but illustrates how the code can be used
+data(IsraelPalestineConflict)
+# Find the mode of an msbvar model
+# Initial guess is based on random draw, so set seed.
+set.seed(123)
+xm <- msbvar(IsraelPalestineConflict, p=3, h=2,
+lambda0=0.8, lambda1=0.15,
+lambda3=1, lambda4=1, lambda5=0, mu5=0,
+mu6=0, qm=12,
+alpha.prior=matrix(c(10,5,5,9), 2, 2))
+# Plot out the initial mode
+plot(ts(xm$fp))
+print(xm$Q)
+# Now sample the posterior
+N1 <- 1000
+N2 <- 2000
+# First, so this with random permutation sampling
+#x1 <- gibbs.msbvar(xm, N1=N1, N2=N2, permute=TRUE)
+# Identify the regimes using clustering in plotregimeid()
+#win.graph()
+#plotregimeid(x1, type="all")
+# Now re-estimate based on desired regime identification seen in the
+# plots. Here we are using the intercept of the first equation, so
+# Beta.idx=c(7,1).
+#x2 <- gibbs.msbvar(xm, N1=N1, N2=N2, permute=FALSE, Beta.idx=c(7,1))
+# Plot regimes
+#win.graph()
+#plot.SS(x2)
+# Summary of transition matrix
+#summary(x2$Q.sample)
+# Plot of the variance elements
+#win.graph()
+#plot(x2$Sigma.sample)
+## End(Not run)
+```
+
+# References
+
+Brandt, Patrick T. 2009. "Empirical, Regime-Specific Models of International, Inter-group Conflict,
+and Politics"
+Fruhwirth-Schnatter, Sylvia. 2001. "Markov Chain Monte Carlo Estimation of Classical and Dynamic Switching and Mixture Models". Journal of the American Statistical Association. 96(153):194–
+209.
+Fruhwirth-Schnatter, Sylvia. 2006. Finite Mixture and Markov Switching Models. Springer Series
+in Statistics New York: Springer.
+Sims, Christopher A. and Daniel F. Waggoner and Tao Zha. 2008. "Methods for inference in large
+multiple-equation Markov-switching models" Journal of Econometrics 146(2):255–274.
+Krolzig, Hans-Martin. 1997. Markov-Switching Vector Autoregressions: Modeling, Statistical
+Inference, and Application to Business Cycle Analysis.

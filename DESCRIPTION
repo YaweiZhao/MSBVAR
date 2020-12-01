@@ -4,7 +4,8 @@ Date: 2011-11-14
 Title: Markov-Switching, Bayesian, Vector Autoregression Models
 Authors@R: c(person("Patrick", "Brandt", role=c("aut", "cre"),
                      email="pbrandt@utdallas.edu"),
-             person("W. Ryan", "Davis", role=c("ctb")))
+             person("W. Ryan", "Davis", role=c("ctb")),
+             person("Tulips liu", "Daniel", role=c("aut","ctb")))
 Maintainer: Patrick Brandt <pbrandt@utdallas.edu>
 Imports: KernSmooth, xtable, coda, bit, mvtnorm, lattice
 Description: Provides methods for estimating frequentist and
@@ -29,3 +30,7 @@ Author: Patrick Brandt [aut, cre],
 Repository: CRAN
 Date/Publication: 2016-11-15 00:14:13
 RoxygenNote: 7.1.1
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
