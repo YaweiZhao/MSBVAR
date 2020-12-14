@@ -52,7 +52,7 @@ $$
 where $y_t$ is an $n*1$ vector of observed endogenous vaiables;$c_t$ is an $n*1$ vector fo time varying coefficients.
 $$
 \tag{1.2}
-\y_t=c_t+\mathbb{B}_{1,t y_{t-1}}+\ldots+\mathbb{B}_{k,t y_{t_k}}
+y_t=c_t+\mathbb{B}_{1,t y_{t-1}}+\ldots+\mathbb{B}_{k,t y_{t_k}}
 +A_t^{-1}\Sigma_{t \sigma_t}
 $$
 # Gibbs sampler for a Markov-switching Bayesian reduced form vector autoregression model

@@ -1,11 +1,11 @@
 Package: MSBVAR
-Version: 2.0-1
+Version: 2.0.1
 Date: 2011-11-14
 Title: Markov-Switching, Bayesian, Vector Autoregression Models
 Authors@R: c(person("Patrick", "Brandt", role=c("aut", "cre"),
                      email="pbrandt@utdallas.edu"),
              person("W. Ryan", "Davis", role=c("ctb")),
-             person("Tulips liu", "Daniel", role=c("aut","ctb")))
+             person("Daniel", "Liu","Tulips", role=c("aut","ctb")))
 Maintainer: Patrick Brandt <pbrandt@utdallas.edu>
 Imports: KernSmooth, xtable, coda, bit, mvtnorm, lattice
 Description: Provides methods for estimating frequentist and
