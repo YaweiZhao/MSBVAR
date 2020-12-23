@@ -14,7 +14,7 @@ You can install the released version of MSBVAR fromfrom
 [GitHub](https://github.com/) with:
 
 ``` r
-if (!require("remotes")) install.packages("remotes")
+if (!require("devtools")) install.packages("devtools")
 devtools::install_github("tulipsliu/MSBVAR",dependencies = TRUE)
 ```
 
